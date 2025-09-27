@@ -24,49 +24,40 @@ function formatSeconds(totalSeconds) {
 
 
 async function getSongs(folder) {
-    currFolder = folder
-    let a = await fetch(`${folder}/`)
-    let response = await a.text()
-    let div = document.createElement("div")
-    div.innerHTML = response;
-    let as = div.getElementsByTagName("a")
-    songs = []
-    for (let index = 0; index < as.length; index++) {
-        const element = as[index];
-        if (element.href.endsWith(".mp3")) {
-            songs.push(element.href.split(`/${folder}/`)[1])
-        }
+    currFolder = folder;
 
-    }
+    // info.json se list lo
+    let res = await fetch(`${folder}/info.json`);
+    let data = await res.json();
+    songs = data.songs; // array from JSON
 
-    // show all the song in playlist
-    let songUL = document.querySelector(".songlist").getElementsByTagName("ul")[0]
-    songUL.innerHTML = ""
+    // show all songs
+    let songUL = document.querySelector(".songlist ul");
+    songUL.innerHTML = "";
     for (const song of songs) {
-        songUL.innerHTML = songUL.innerHTML + `   <li>
-                        <img class="invert" src="img/music.svg" alt="">
-                        <div class="info ">
-                            <div>${song.replaceAll("%20", "")}</div>
-                            <div>Arbaj khan</div>
-                        </div>
-                        <div class="playnow">
-                          <span>PlayNow</span>
-                            <img class="invert" src="img/play.svg" alt="">
-                        </div>
-                      </li>`
+        songUL.innerHTML += `
+            <li>
+                <img class="invert" src="img/music.svg" alt="">
+                <div class="info">
+                    <div>${song}</div>
+                    <div>Arbaj Khan</div>
+                </div>
+                <div class="playnow">
+                    <span>PlayNow</span>
+                    <img class="invert" src="img/play.svg" alt="">
+                </div>
+            </li>`;
     }
 
-    // attch an event listner to each song
-    Array.from(document.querySelector(".songlist").getElementsByTagName("li")).forEach(e => {
-        e.addEventListener("click", element => {
-        
-            playMusic(e.querySelector(".info").firstElementChild.innerHTML.trim())
-            
-        })
+    // event listener
+    Array.from(document.querySelectorAll(".songlist li")).forEach(e => {
+        e.addEventListener("click", () => {
+            let track = e.querySelector(".info div").innerText.trim();
+            playMusic(track);
+        });
+    });
 
-    })
-
-    return songs
+    return songs;
 }
 
 const playMusic = (track, pause = false) => {
