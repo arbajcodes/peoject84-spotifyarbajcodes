@@ -25,7 +25,7 @@ function formatSeconds(totalSeconds) {
 
 async function getSongs(folder) {
     currFolder = folder
-    let a = await fetch(`/${folder}/`)
+    let a = await fetch(`${folder}/`)
     let response = await a.text()
     let div = document.createElement("div")
     div.innerHTML = response;
@@ -59,7 +59,7 @@ async function getSongs(folder) {
     // attch an event listner to each song
     Array.from(document.querySelector(".songlist").getElementsByTagName("li")).forEach(e => {
         e.addEventListener("click", element => {
-            console.log(e.querySelector(".info").firstElementChild.innerHTML);
+        
             playMusic(e.querySelector(".info").firstElementChild.innerHTML.trim())
             
         })
@@ -70,7 +70,7 @@ async function getSongs(folder) {
 }
 
 const playMusic = (track, pause = false) => {
-    currentsong.src = `/${currFolder}/` + track
+    currentsong.src = `${currFolder}/` + track
     if (!pause) {
         currentsong.play()
         play.src = "img/pause.svg"
@@ -82,7 +82,7 @@ const playMusic = (track, pause = false) => {
 
 
 async function displayAlbums() {
-    let a = await fetch(`/songs/`)
+    let a = await fetch(`songs/`)
     let response = await a.text()
     let div = document.createElement("div")
     div.innerHTML = response;
@@ -98,7 +98,7 @@ async function displayAlbums() {
             console.log("hhh" + folder);
 
             //get metadata of the folder
-            let a = await fetch(`/songs/${folder}/info.json`)
+            let a = await fetch(`songs/${folder}/info.json`)
             let response = await a.json()
             console.log(response);
             cardContainer.innerHTML = cardContainer.innerHTML + `<div data-folder = "${folder}" class="card">
@@ -112,7 +112,7 @@ async function displayAlbums() {
             </path>
             </svg>
             </div>
-            <img src="/songs/${folder}/cover.jpg" alt="">
+            <img src="songs/${folder}/cover.jpg" alt="">
                         <h2>${response.title}</h2>
                         <p>${response.description}</p>
                     </div>`
@@ -154,7 +154,7 @@ async function main() {
 
 
     currentsong.addEventListener("timeupdate", () => {
-        document.querySelector(".songtime").innerHTML = `${formatSeconds(currentsong.currentTime)}:
+        document.querySelector(".songtime").innerHTML = `${formatSeconds(currentsong.currentTime)}
        / ${formatSeconds(currentsong.duration)}`
         document.querySelector(".circle").style.left = (currentsong.currentTime / currentsong.duration) * 100 + "%";
     })
